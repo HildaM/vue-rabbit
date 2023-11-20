@@ -1,3 +1,3 @@
 <template>
-    <div>Home页</div>
+    <div style="height: 1200px">Home页</div>
 </template>
