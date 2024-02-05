@@ -3,6 +3,8 @@ import { getDetail } from '@/apis/detail';
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import DetailHot from './components/DetailHot.vue'
+import { ElMessage } from 'element-plus';
+import { useCartStore } from '@/stores/cart';
 
 // 1. 获取商品信息
 const route = useRoute()
@@ -14,8 +16,36 @@ const getGoods = async () => {
 onMounted(() => getGoods())
 
 // 2. sku规格变化
+let skuObj = {}
 const skuChange = (sku) => {
-    console.log(sku)
+    skuObj = sku
+}
+
+// 3. 商品数量
+const count = ref(1)
+const countChange = (count) => {
+    console.log(count)
+}
+
+// 4. 添加购物车
+const cartStore = useCartStore()
+const addCart = () => {
+    if (!skuObj.skuId) {
+        ElMessage.warning('请选择商品规格')
+        return
+    }
+
+    // 添加购物车
+    cartStore.addCart({
+        id: goods.value.id, // 商品id
+        name: goods.value.name, // 商品名称
+        picture: goods.value.mainPictures[0], // 图片
+        price: goods.value.price, // 最新价格
+        count: count.value, // 商品数量
+        skuId: skuObj.skuId, // skuId
+        attrsText: skuObj.specsText, // 商品规格文本
+        selected: true // 商品是否选中
+    })
 }
 
 
@@ -32,9 +62,11 @@ const skuChange = (sku) => {
             <div class="bread-container">
                 <el-breadcrumb separator=">">
                     <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-                    <el-breadcrumb-item :to="{ path: `/category/${goods.categories[1].id}` }">{{ goods.categories?.[1].name }}
+                    <el-breadcrumb-item :to="{ path: `/category/${goods.categories[1].id}` }">{{ goods.categories?.[1].name
+                    }}
                     </el-breadcrumb-item>
-                    <el-breadcrumb-item :to="{ path: `/category/sub/${goods.categories?.[0].id}` }">{{ goods.categories?.[0].name }}
+                    <el-breadcrumb-item :to="{ path: `/category/sub/${goods.categories?.[0].id}` }">{{
+                        goods.categories?.[0].name }}
                     </el-breadcrumb-item>
                     <el-breadcrumb-item>抓绒保暖，毛毛虫子儿童运动鞋</el-breadcrumb-item>
                 </el-breadcrumb>
@@ -98,13 +130,14 @@ const skuChange = (sku) => {
                             </div>
 
                             <!-- sku组件 -->
-                            <XtxSku :goods="goods" @change="skuChange"/>
+                            <XtxSku :goods="goods" @change="skuChange" />
 
                             <!-- 数据组件 -->
+                            <el-input-number v-model="count" @change="countChange" />
 
                             <!-- 按钮组件 -->
                             <div>
-                                <el-button size="large" class="btn">
+                                <el-button size="large" class="btn" @click="addCart">
                                     加入购物车
                                 </el-button>
                             </div>
@@ -135,9 +168,9 @@ const skuChange = (sku) => {
                         <!-- 24热榜+专题推荐 -->
                         <div class="goods-aside">
                             <!-- 24小时热榜 -->
-                            <DetailHot :hot-type="1"/>
+                            <DetailHot :hot-type="1" />
                             <!-- 周热榜 -->
-                            <DetailHot :hot-type="2"/> 
+                            <DetailHot :hot-type="2" />
                         </div>
                     </div>
                 </div>

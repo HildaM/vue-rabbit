@@ -37,7 +37,7 @@ http.interceptors.response.use(
     });
 
     // 401 token 失效处理。1. 清除本地用户数据；2. 跳转到登录页
-    if (e.response.status === 401) {
+    if (e.response.status === 401) { 
       userStore.clearUserInfo()
       router.push('/login')
     }
