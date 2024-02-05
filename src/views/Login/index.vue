@@ -1,14 +1,17 @@
 <script setup>
 import { ref } from 'vue'
-import { loginAPI } from '@/apis/user'
 import 'element-plus/theme-chalk/el-message.css'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 
 // 表单校验
 const form = ref({
-    account: '',
-    password: '',
+    // 测试帐号
+    account: 'heima282',
+    password: 'hm#qd@23!',
     agree: true,
 })
 // 字段规则
@@ -45,8 +48,7 @@ const doLogin = () => {
         // valid: 表示所有表单参数校验都为true才能通过校验
         if (valid) {
             // Login
-            const res = await loginAPI({ account, password })
-            console.log(res)
+            await userStore.getUserInfo({ account, password })
 
             // 1. 提示用户
             ElMessage({ type: 'success', message: '登陆成功' })

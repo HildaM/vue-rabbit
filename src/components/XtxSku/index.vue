@@ -7,16 +7,18 @@
           <img :class="{ selected: val.selected, disabled: val.disabled }" @click="clickSpecs(item, val)"
             v-if="val.picture" :src="val.picture" />
           <span :class="{ selected: val.selected, disabled: val.disabled }" @click="clickSpecs(item, val)" v-else>{{
-              val.name
+            val.name
           }}</span>
         </template>
       </dd>
     </dl>
   </div>
 </template>
+
 <script>
 import { watchEffect } from 'vue'
 import getPowerSet from './power-set'
+
 const spliter = '★'
 // 根据skus数据得到路径字典对象
 const getPathMap = (skus) => {
@@ -45,7 +47,7 @@ const getPathMap = (skus) => {
 }
 
 // 初始化禁用状态
-function initDisabledStatus (specs, pathMap) {
+function initDisabledStatus(specs, pathMap) {
   if (specs && specs.length > 0) {
     specs.forEach(spec => {
       spec.values.forEach(val => {
@@ -99,9 +101,9 @@ export default {
     }
   },
   emits: ['change'],
-  setup (props, { emit }) {
+  setup(props, { emit }) {
     let pathMap = {}
-    
+
     watchEffect(() => {
       // 得到所有字典集合
       pathMap = getPathMap(props.goods.skus)
